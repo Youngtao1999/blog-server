@@ -4,8 +4,11 @@ const Controller = require('egg').Controller;
 
 class HomeController extends Controller {
   async index() {
-    const { ctx } = this;
-    ctx.body = 'api 接口';
+    const { ctx, app } = this;
+    
+    const res = await app.mysql.get("blog_content", {});
+    console.log(res);
+    ctx.body = res;
   }
 }
 
