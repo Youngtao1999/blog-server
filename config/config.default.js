@@ -22,7 +22,7 @@ module.exports = appInfo => {
   const userConfig = {
     // myAppName: 'egg',
   };
-
+  // mysql 数据库插件
   config.mysql = {
     client: {
       host: 'localhost',
@@ -36,6 +36,17 @@ module.exports = appInfo => {
     // load into agent, default is close
     agent: false,
   };
+  config.security = {
+    csrf: {
+      enable: false
+    },
+    domainWhiteList: ['*']
+  };
+  // cors 跨域插件
+  config.cors = {
+    origin: '*',
+    allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH,OPTIONS'
+  }
 
   return {
     ...config,

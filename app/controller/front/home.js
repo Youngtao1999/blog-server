@@ -3,13 +3,41 @@
 const Controller = require('egg').Controller;
 
 class HomeController extends Controller {
-  async index() {
+  // 首页接口
+  async getArticleList() {
     const { ctx, app } = this;
     
-    const res = await app.mysql.get("blog_content", {});
-    console.log(res);
-    ctx.body = res;
+    let sql = 'SELECT article.id as id,' +
+              'article.title as title,' +
+              'article.introduce as introduce,' +
+              "article.addDate as addDate," +
+              'article.view_count as view_count,' +
+              'type.typeName as typeName ' +
+              'FROM article LEFT JOIN type ON article.type_id = type.id';
+    
+    const res = await app.mysql.query(sql);
+    ctx.body = { data: res };
   }
+  
+  // 
+  async getArticleById() {
+    const { ctx, app } = this;
+
+    let id = ctx.params.id;
+    let sql = 'SELECT article.id as id,'+
+        'article.title as title,'+
+        'article.introduce as introduce,'+
+        'article.article_content as article_content,'+
+        "article.addDate as addDate,"+
+        'article.view_count as view_count ,'+
+        'type.typeName as typeName ,'+
+        'type.id as typeId '+
+        'FROM article LEFT JOIN type ON article.type_id = type.Id '+
+        'WHERE article.id='+id
+    const res = await app.mysql.query(sql);
+    ctx.body = { data: res };
+  }
+
 }
 
 module.exports = HomeController;
