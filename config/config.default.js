@@ -36,6 +36,11 @@ module.exports = appInfo => {
     // load into agent, default is close
     agent: false,
   };
+
+  config.jwt = {  //jwt配置项
+    secret: "123456"
+  }
+
   config.security = {
     csrf: {
       enable: false

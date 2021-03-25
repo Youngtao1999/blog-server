@@ -3,39 +3,41 @@
 const Controller = require("egg").Controller;
 
 class MainController extends Controller {
-  async index() {
-    this.ctx.body = "hi api";
-  }
-
+  // 登录接口
   async login() {
-    let userName = this.ctx.request.body.userName;
-    let password = this.ctx.request.body.password;
+    const {ctx, app} = this;
+    let userName = ctx.request.body.userName;
+    let password = ctx.request.body.password;
     const sql = `SELECT userName FROM admin_user WHERE userName = '${userName}' AND password = '${password}'`
-    const res = await this.app.mysql.query(sql);
+    const res = await app.mysql.query(sql);
     if(res.length > 0) {
-      let openId = new Date().getTime();
-      this.ctx.session.openId = { 'openId': openId };
-      this.ctx.body = {"data": "登录成功", "openId": openId};
+      // 设置token
+      const token = app.jwt.sign({
+        'userName': userName,
+        'password': password,
+      }, app.config.jwt.secret);
+      console.log("token", token)
+      // ctx.set({'authorization':token})//设置headers
+
+      ctx.body = {
+        success: true,
+        token: token,
+      };
     }else {
-      this.ctx.body = {"data": "登录失败"}
+      ctx.body = { 
+        success: false
+      }
     }
   }
-  async login1(){
-      let userName = this.ctx.request.body.userName
-      let password = this.ctx.request.body.password
-      const sql = `SELECT userName FROM admin_user WHERE userName = '${userName}' AND password = '${password}'`
-
-      const res = await this.app.mysql.query(sql)
-      if(res.length > 0) {
-          //登录成功,进行session缓存
-          let openId = new Date().getTime()
-          this.ctx.session.openId = { 'openId': openId }
-          this.ctx.body={'message':'登录成功','openId':openId}
-
-      }else{
-          this.ctx.body={data:'登录失败'}
-      } 
+  // 获取类型信息
+  async getTypeInfo() {
+    const type = await this.app.mysql.select("type");
+    this.ctx.body = {
+      success: true,
+      data: type
+    }
   }
+
 }
 
 module.exports = MainController;
