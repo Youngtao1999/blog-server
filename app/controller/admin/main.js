@@ -37,6 +37,43 @@ class MainController extends Controller {
       data: type
     }
   }
+  // 添加文章
+  async addArticle() {
+    const { ctx, app } = this;
+    let temArticle = ctx.request.body;
+    // 使用插件
+    // const result = await app.mysql.insert("article", temArticle);
+    const {type_id, title, article_content, introduce, addDate, view_count} = temArticle;
+
+    const sql = `INSERT INTO article (type_id, title, article_content, introduce, addDate, view_count) VALUES ("${type_id}", "${title}", "${article_content}", "${introduce}", "${addDate}", "${view_count}" )`
+    
+    
+    const result = await app.mysql.query(sql);
+    const success = result.affectedRows === 1;
+    const insertId = result.insertId;
+
+    ctx.body = {
+      success,
+      insertId,
+    }
+  }
+  // 修改文章
+  async updateArticle() {
+    const {app, ctx} = this;
+    const temArticle = ctx.request.body;
+    // 使用插件
+    // const result = await app.mysql.update("article", temArticle);
+    const {type_id, title, article_content, introduce, addDate, id} = temArticle;
+
+    const sql = `UPDATE article SET type_id="${type_id}", title="${title}", article_content="${article_content}", introduce="${introduce}", addDate="${addDate}" where id="${id}"`
+
+    const result = await app.mysql.query(sql);
+    const success = result.affectedRows === 1;
+
+    ctx.body = {
+      success
+    }
+  }
 
 }
 
