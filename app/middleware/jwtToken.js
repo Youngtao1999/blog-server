@@ -1,3 +1,5 @@
+// token中间件
+
 module.exports = (option) => {
   return async function jwtToken(ctx, next) {
     const token = ctx.request.header.authorization;
@@ -5,7 +7,6 @@ module.exports = (option) => {
     if(token) {
       try {
         decode = ctx.app.jwt.verify(token, option.secret);
-        console.log('decode======>',decode);
         await next();
       } catch(err) {
         ctx.status = 401;

@@ -9,4 +9,10 @@ module.exports = (app) => {
   router.post('/admin/addArticle', jwtToken, controller.admin.main.addArticle);
   // 更新文章
   router.post('/admin/updateArticle', jwtToken, controller.admin.main.updateArticle);
+  // 文章列表
+  router.get('/admin/getArticleList', jwtToken, controller.admin.main.getArticleList);
+  // 删除文章
+  router.get('/admin/delArticle', jwtToken, controller.admin.main.delArticle);
+  // 根据id查询文章
+  router.get('/admin/getArticleById', jwtToken, controller.admin.main.getArticleById);
 }

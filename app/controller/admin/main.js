@@ -8,7 +8,9 @@ class MainController extends Controller {
     const {ctx, app} = this;
     let userName = ctx.request.body.userName;
     let password = ctx.request.body.password;
-    const sql = `SELECT userName FROM admin_user WHERE userName = '${userName}' AND password = '${password}'`
+    const sql = `SELECT userName FROM admin_user
+                 WHERE userName = '${userName}'
+                 AND password = '${password}'`
     const res = await app.mysql.query(sql);
     if(res.length > 0) {
       // 设置token
@@ -45,7 +47,9 @@ class MainController extends Controller {
     // const result = await app.mysql.insert("article", temArticle);
     const {type_id, title, article_content, introduce, addDate, view_count} = temArticle;
 
-    const sql = `INSERT INTO article (type_id, title, article_content, introduce, addDate, view_count) VALUES ("${type_id}", "${title}", "${article_content}", "${introduce}", "${addDate}", "${view_count}" )`
+    const sql = `INSERT INTO article
+                 (type_id, title, article_content, introduce, addDate, view_count)
+                 VALUES ("${type_id}", "${title}", "${article_content}", "${introduce}", "${addDate}", "${view_count}" )`
     
     
     const result = await app.mysql.query(sql);
@@ -65,13 +69,73 @@ class MainController extends Controller {
     // const result = await app.mysql.update("article", temArticle);
     const {type_id, title, article_content, introduce, addDate, id} = temArticle;
 
-    const sql = `UPDATE article SET type_id="${type_id}", title="${title}", article_content="${article_content}", introduce="${introduce}", addDate="${addDate}" where id="${id}"`
+    const sql = `UPDATE article SET 
+                type_id="${type_id}", 
+                title="${title}", 
+                article_content="${article_content}", 
+                introduce="${introduce}", 
+                addDate="${addDate}" 
+                where id="${id}"`
 
     const result = await app.mysql.query(sql);
     const success = result.affectedRows === 1;
 
     ctx.body = {
       success
+    }
+  }
+  // 获取文章列表
+  async getArticleList() {
+    const {app, ctx} = this;
+    const sql = 'SELECT article.id as id,' +
+                'article.title as title,' +
+                'article.introduce as introduce,' +
+                "DATE_FORMAT(article.addDate,'%Y-%m-%d') as addDate,"+
+                // "article.addDate as addDate," +
+                'article.view_count as view_count,' +
+                'type.typeName as typeName ' +
+                'FROM article LEFT JOIN type ON article.type_id = type.id';
+
+    const result = await app.mysql.query(sql);
+    ctx.body = {
+      list: result
+    }
+  }
+  // 删除文章
+  async delArticle() {
+    const {app, ctx} = this;
+    const id = ctx.query.id;
+    // 使用插件
+    // const result = await app.mysql.delete("article", {"id": id});
+
+    const sql = `DELETE FROM article where id = '${id}'`;
+    const result = await app.mysql.query(sql);
+    ctx.body = {
+      data: result,
+      success: true
+    }
+  }
+  // 根据id获得文章内容
+  async getArticleById() {
+    const {app, ctx} = this;
+    const id = ctx.query.id;
+
+    const sql = 'SELECT article.id as id,' +
+                'article.title as title,' +
+                'article.introduce as introduce,' +
+                'article.article_content as article_content,'+
+                "DATE_FORMAT(article.addDate,'%Y-%m-%d') as addDate,"+
+                // "article.addDate as addDate," +
+                'article.view_count as view_count,' +
+                'type.typeName as typeName, ' +
+                'type.id as typeId ' +
+                'FROM article LEFT JOIN type ON article.type_id = type.id ' +
+                'WHERE article.id = '+id;
+
+    const result = await app.mysql.query(sql);
+    ctx.body = {
+      data: result,
+      success: true
     }
   }
 
