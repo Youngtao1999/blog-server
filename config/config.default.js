@@ -22,24 +22,26 @@ module.exports = appInfo => {
   const userConfig = {
     // myAppName: 'egg',
   };
-  // mysql 数据库插件
+  // mysql 数据库配置
   config.mysql = {
     client: {
-      host: 'localhost',
-      port: '3306',
-      user: 'root',
-      password: '123456',
-      database: 'blog',    
+      host: 'localhost',  // host
+      port: '3306', // 端口号
+      user: 'root', // 用户名
+      password: '123456', // 密码
+      database: 'blog', // 数据库名
     },
-    // load into app, default is open
+    // 是否加载到 app 上，默认开启
     app: true,
-    // load into agent, default is close
+    // 是否加载到 agent 上，默认关闭
     agent: false,
   };
 
   config.jwt = {  //jwt配置项
     secret: "123456"
-  }
+  };
+
+  config.uploadDir = 'app/public/uploadImg';
 
   config.security = {
     csrf: {
@@ -49,8 +51,8 @@ module.exports = appInfo => {
   };
   // cors 跨域插件
   config.cors = {
-    origin: 'http://localhost:3000',
-    credentials: true,  // 允许cookie跨域
+    origin: '*',
+    // credentials: true,  // 允许cookie跨域
     allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH,OPTIONS',
   }
 
